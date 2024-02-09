@@ -1,2 +1,18 @@
-const reg = /^(?=.{3,16}$)[a-z0-9-_]/
-console.log(reg.test('dvd_121ffffffffff'))
+function* criadorId(){
+    let id = 0;
+    while(true){
+        yield id++;
+    };
+};
+
+let criaId = criadorId();
+
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)
+console.log(criaId.next().value)

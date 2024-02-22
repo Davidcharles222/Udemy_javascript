@@ -11,16 +11,17 @@ class Calculator{
 
     addDigit(digit){
         if(digit === '.' && this.currentOperationText.innerText.includes('.')){
-            return
+            return;
         }
-        this.urrentOperation = digit;
+
+        this.currentOperation = digit;
         this.updateOperation();
     }
 
-    processOperation(operator){
-        if(this.currentOperationText.innerText === ''){
+    processOperator(operator){
+        if(this.currentOperationText.innerText === '' && operator !== 'C'){
             if(this.previousOperationText.innerText !== ''){
-                this.changeOperation(operator);
+                this.chouseOperation(operator);
             }
             return;
         }
@@ -30,26 +31,37 @@ class Calculator{
 
         switch(operator){
             case '+':
-                operatorValue = current+ previous;
+                operatorValue = previous + current;
                 this.updateOperation(operatorValue, operator, current, previous)
-            break;
+                break;
             case '-':
-                operatorValue = current - previous;
+                operatorValue = previous - current;
                 this.updateOperation(operatorValue, operator, current, previous)
-            break;
+                break;
             case '*':
-                operatorValue = current * previous;
+                operatorValue = previous * current;
                 this.updateOperation(operatorValue, operator, current, previous)
-            break;
+                break;
             case '/':
-                operatorValue = current / previous;
+                operatorValue = previous / current;
                 this.updateOperation(operatorValue, operator, current, previous)
+                break;
+            case 'DEL':
+                this.processDelOperator();
+                break;
+            case 'C':
+                this.processCOperator();
+                break;
+            case 'CE':
+                this.processCEOperator();
+                break;
+            case '=':
+                this.processEqualOperator();
             break;
             default:
                 return;
+        }
     }
-    }
-
 
     updateOperation(
         operatorValue = null,
@@ -58,39 +70,54 @@ class Calculator{
         previous = null
     ){
         if(operatorValue === null){
-            this.currentOperationText.innerText += this.currentOperation
+            this.currentOperationText.innerText += this.currentOperation;
         }else{
-            if(previous === null){
+            if(previous === 0){
                 operatorValue = current;
             }
-            this.previousOperationText.innerText = `${operatorValue} ${operator}`;
-            this.currentOperationText.innerText = ''
+            this.previousOperationText.innerText = `${operatorValue} ${operator}`
+            this.currentOperationText.innerText = '';
         }
     }
 
-    changeOperation(operator){
+    chouseOperation(operator){
         const mathOperator = ['+','-','*','/']
 
         if(!mathOperator.includes(operator)){
             return;
         }
-
         this.previousOperationText.innerText = this.previousOperationText.innerText.slice(0, -1) + operator
     }
 
+    processDelOperator(){
+        this.currentOperationText.innerText = this.currentOperationText.innerText.slice(0, -1);
+    }
+
+    processCOperator(){
+        this.previousOperationText.innerText = '';
+        this.currentOperationText.innerText = '';
+    }
+
+    processCEOperator(){
+        this.currentOperationText.innerText = '';
+    }
+
+    processEqualOperator(){
+        const operator = previousOperationText.innerText.split(' ')[1];
+        this.processOperator(operator)
+    }
 }
 
-
-const calc = new Calculator(previousOperationText, currentOperationText)
-
+const calc = new Calculator(previousOperationText, currentOperationText);
 
 buttons.forEach((btn) => {
-    btn.addEventListener('click', (evt) => {
+    btn.addEventListener('click',(evt) => {
         const valor = evt.target.innerText;
+        
         if(+valor >= 0 || valor === '.'){
             calc.addDigit(valor);
         }else{
-            calc.processOperation(valor);
+            calc.processOperator(valor);
         }
     })
 })
